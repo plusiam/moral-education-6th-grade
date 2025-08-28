@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6학년 도덕 - 공정한 생활 수업 PPT</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: #1a1a2e; overflow: hidden; }
+        
+        .slide {
+            width: 100vw; height: 100vh;
+            display: none; padding: 60px;
+            position: relative; animation: slideIn 0.6s;
+        }
+        .slide.active { display: flex; flex-direction: column; justify-content: center; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* 슬라이드 1 - 타이틀 */
+        .slide1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; text-align: center;
+        }
+        .slide1 h1 { font-size: 72px; margin-bottom: 30px; text-shadow: 3px 3px 10px rgba(0,0,0,0.3); }
+        .slide1 .subtitle { 
+            background: rgba(255,255,255,0.2); 
+            padding: 30px 50px; border-radius: 20px; 
+            display: inline-block; margin-top: 20px;
+        }
+        
+        /* 슬라이드 2 - 학습목표 */
+        .slide2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .slide2 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .objectives {
+            background: white; padding: 40px; border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .obj-item {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            padding: 25px; margin: 15px 0; border-radius: 15px;
+            font-size: 28px; border-left: 5px solid #667eea;
+        }
+        
+        /* 슬라이드 3 - 생각열기 */
+        .slide3 {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+        .slide3 h1 { text-align: center; color: #2d3436; font-size: 56px; margin-bottom: 40px; }
+        .word-cloud {
+            background: white; padding: 50px; border-radius: 30px;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        .word-cloud h2 { font-size: 40px; color: #e67e22; margin-bottom: 30px; }
+        .words {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+            margin-top: 30px;
+        }
+        .word {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white; padding: 15px 30px; border-radius: 25px;
+            font-size: 24px; cursor: pointer; transition: all 0.3s;
+        }
+        .word:hover { transform: scale(1.1); }
+        
+        /* 슬라이드 4 - 영상토론 */
+        .slide4 {
+            background: #2c3e50;
+        }
+        .slide4 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .video-container {
+            background: #34495e; padding: 40px; border-radius: 30px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .video-placeholder {
+            width: 80%; height: 400px; background: #1a1a1a;
+            border-radius: 20px; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 32px;
+            margin-bottom: 30px;
+        }
+        .discussion {
+            background: white; padding: 30px; border-radius: 20px; width: 80%;
+        }
+        .discussion h3 { color: #e74c3c; font-size: 32px; margin-bottom: 20px; }
+        .discussion li { font-size: 24px; margin: 15px 0; list-style: none; }
+        .discussion li:before { content: "🤔 "; margin-right: 10px; }
+        
+        /* 슬라이드 5 - 개념정리 */
+        .slide5 {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+        }
+        .slide5 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .concept-visual {
+            display: flex; justify-content: center; align-items: center; gap: 40px;
+        }
+        .concept-circle {
+            width: 200px; height: 200px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; color: white; font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-size: 24px;
+            padding: 20px; text-align: center;
+        }
+        .concept-circle.blue { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .concept-circle.red { background: linear-gradient(135deg, #e17055, #d63031); }
+        .concept-circle.gold { 
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            width: 250px; height: 250px; font-size: 32px;
+        }
+        .operator { font-size: 48px; color: white; font-weight: bold; }
+        
+        /* 슬라이드 6 - 활동안내 */
+        .slide6 {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+        }
+        .slide6 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .activity-steps {
+            background: white; padding: 40px; border-radius: 30px;
+        }
+        .step {
+            display: flex; align-items: center; margin: 20px 0;
+            padding: 20px; background: #f8f9fa; border-radius: 15px;
+        }
+        .step-number {
+            background: #6c5ce7; color: white; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-weight: bold; font-size: 24px;
+            margin-right: 20px;
+        }
+        .step-content { font-size: 24px; }
+        
+        /* 슬라이드 7 - 사례 */
+        .slide7 {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        .slide7 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .cases-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .case-card {
+            background: white; padding: 25px; border-radius: 15px;
+            font-size: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .case-number {
+            position: absolute; top: -10px; left: -10px;
+            background: #e74c3c; color: white; width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-weight: bold;
+        }
+        
+        /* 슬라이드 8 - 쿠키챌린지 */
+        .slide8 {
+            background: linear-gradient(135deg, #f8b500 0%, #fceabb 100%);
+        }
+        .slide8 h1 { text-align: center; color: #2d3436; font-size: 56px; margin-bottom: 40px; }
+        .cookie-container {
+            background: white; padding: 40px; border-radius: 30px;
+            text-align: center;
+        }
+        .cookies { font-size: 100px; margin: 30px 0; }
+        .choices {
+            display: flex; justify-content: center; gap: 40px; margin-top: 30px;
+        }
+        .choice {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white; padding: 30px; border-radius: 20px;
+            font-size: 24px; flex: 1; max-width: 300px;
+        }
+        
+        /* 슬라이드 9 - 중요성 */
+        .slide9 {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        }
+        .slide9 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .comparison {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
+        }
+        .comp-box {
+            padding: 40px; border-radius: 20px;
+        }
+        .comp-box.negative { background: #ffcccc; }
+        .comp-box.positive { background: #ccffcc; }
+        .comp-box h2 { font-size: 32px; margin-bottom: 20px; text-align: center; }
+        .comp-box li { font-size: 22px; margin: 15px 0; list-style: none; }
+        
+        /* 슬라이드 10 - 정리 */
+        .slide10 {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        .slide10 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .summary-points {
+            background: white; padding: 40px; border-radius: 30px;
+        }
+        .point {
+            display: flex; align-items: center; margin: 20px 0;
+            padding: 20px; background: #f8f9fa; border-radius: 15px;
+            border-left: 5px solid #2575fc;
+        }
+        .point-icon { font-size: 32px; margin-right: 20px; }
+        .point-text { font-size: 24px; }
+        
+        /* 슬라이드 11 - 다짐 */
+        .slide11 {
+            background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%);
+        }
+        .slide11 h1 { text-align: center; color: white; font-size: 56px; margin-bottom: 40px; }
+        .pledge-box {
+            background: white; padding: 40px; border-radius: 30px;
+            text-align: center;
+        }
+        .pledge-box h2 { color: #e67e22; font-size: 36px; margin-bottom: 30px; }
+        .pledge-examples {
+            display: flex; justify-content: space-around; margin-top: 30px;
+        }
+        .pledge-item {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            padding: 25px; border-radius: 15px; flex: 1; margin: 0 10px;
+            font-size: 20px;
+        }
+        
+        /* 슬라이드 12 - 차시예고 */
+        .slide12 {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            color: white; text-align: center;
+        }
+        .slide12 h1 { font-size: 56px; margin-bottom: 40px; }
+        .next-preview {
+            background: rgba(255,255,255,0.2); padding: 40px;
+            border-radius: 30px; display: inline-block;
+        }
+        .next-preview h2 { font-size: 40px; margin-bottom: 20px; }
+        .next-preview p { font-size: 28px; margin: 10px 0; }
+        
+        /* 네비게이션 */
+        .nav {
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%); display: flex; gap: 15px;
+            z-index: 1000; background: rgba(0,0,0,0.8);
+            padding: 15px; border-radius: 15px;
+        }
+        .nav button {
+            padding: 12px 25px; background: #3498db; color: white;
+            border: none; border-radius: 8px; font-size: 16px;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .nav button:hover { background: #2980b9; transform: translateY(-2px); }
+        
+        .slide-number {
+            position: absolute; top: 20px; right: 20px;
+            background: #3498db; color: white; padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 슬라이드 1: 타이틀 -->
+    <div class="slide slide1 active">
+        <div class="slide-number">1 / 12</div>
+        <h1>6학년 도덕<br>4. 공정한 생활</h1>
+        <div class="subtitle">
+            <h2 style="font-size: 36px; color: #FFD700;">1차시</h2>
+            <p style="font-size: 28px; margin-top: 15px;">공정한 생활에 대해 알아보아요</p>
+            <p style="font-size: 24px; margin-top: 10px;">📚 교과서 96-101쪽</p>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 2: 학습목표 -->
+    <div class="slide slide2">
+        <div class="slide-number">2 / 12</div>
+        <h1>🎯 오늘의 학습 목표</h1>
+        <div class="objectives">
+            <div class="obj-item">1️⃣ 공정함의 의미를 이해한다</div>
+            <div class="obj-item">2️⃣ 공정과 공평의 차이를 구분할 수 있다</div>
+            <div class="obj-item">3️⃣ 생활 속 공정/불공정 사례를 판단할 수 있다</div>
+            <div class="obj-item">4️⃣ 공정한 생활이 왜 중요한지 설명할 수 있다</div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 3: 생각열기 -->
+    <div class="slide slide3">
+        <div class="slide-number">3 / 12</div>
+        <h1>💭 생각 열기</h1>
+        <div class="word-cloud">
+            <h2>'공정' 하면 떠오르는 것은?</h2>
+            <div class="words">
+                <span class="word">평등</span>
+                <span class="word">규칙</span>
+                <span class="word">심판</span>
+                <span class="word">법</span>
+                <span class="word">정의</span>
+                <span class="word">?</span>
+            </div>
+            <div style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-radius: 15px;">
+                <h3 style="color: #e67e22; font-size: 28px;">📱 퀴즈앤 활동</h3>
+                <p style="font-size: 22px; color: #666; margin-top: 10px;">학생들이 각자 생각을 입력하고 워드클라우드로 확인</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 4: 영상토론 -->
+    <div class="slide slide4">
+        <div class="slide-number">4 / 12</div>
+        <h1>🎬 공정하지 않은 순간들</h1>
+        <div class="video-container">
+            <div class="video-placeholder">
+                📺 영상 재생<br>
+                <span style="font-size: 24px;">스포츠 심판 판정 사례</span>
+            </div>
+            <div class="discussion">
+                <h3>토론 질문</h3>
+                <ul>
+                    <li>왜 이 상황이 불공정하다고 느꼈을까요?</li>
+                    <li>똑같은 규칙인데 왜 다르게 적용되었을까요?</li>
+                    <li>진정한 공정은 무엇일까요?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 5: 개념정리 -->
+    <div class="slide slide5">
+        <div class="slide-number">5 / 12</div>
+        <h1>📚 공정의 의미 알아보기</h1>
+        <div class="concept-visual">
+            <div class="concept-circle blue">
+                <strong>공평</strong><br>
+                어느 쪽으로도<br>치우치지 않음
+            </div>
+            <span class="operator">+</span>
+            <div class="concept-circle red">
+                <strong>정의</strong><br>
+                올바른<br>도리
+            </div>
+            <span class="operator">=</span>
+            <div class="concept-circle gold">
+                <strong>공정</strong><br>
+                공평하고<br>올바름
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 6: 활동안내 -->
+    <div class="slide slide6">
+        <div class="slide-number">6 / 12</div>
+        <h1>✂️ 사례 분류 활동</h1>
+        <div class="activity-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">활동지 배부 - 9개의 사례 카드</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">사례 읽기 - 꼼꼼히 읽고 판단 (3분)</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">분류하기 - 공정/불공정으로 분류 (5분)</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">이유 쓰기 - 왜 그렇게 분류했는지 (5분)</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">발표하기 - 모둠별 발표 (7분)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 7: 사례제시 -->
+    <div class="slide slide7">
+        <div class="slide-number">7 / 12</div>
+        <h1>📋 분류할 사례들</h1>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-number">1</div>
+                시험을 보지 않은 학생에게도 똑같이 점수를 주는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">2</div>
+                시험을 잘 본 학생에게만 장학금을 지급하는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">3</div>
+                회사에서 상사의 친척만 특혜를 받아 승진하는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">4</div>
+                도서관에서 연체하면 누구든 벌금을 내는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">5</div>
+                병원 응급실에서 중증 환자를 먼저 치료하는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">6</div>
+                운동회에서 규칙을 모두에게 똑같이 적용하는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">7</div>
+                다리 부상 학생도 규칙대로 달리기에 참여시키는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">8</div>
+                성과와 관계없이 모두 동일한 보너스를 받는 경우
+            </div>
+            <div class="case-card">
+                <div class="case-number">9</div>
+                알레르기 있는 학생에게 대체 음식을 제공하는 경우
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 8: 쿠키챌린지 -->
+    <div class="slide slide8">
+        <div class="slide-number">8 / 12</div>
+        <h1>🍪 쿠키 챌린지</h1>
+        <div class="cookie-container">
+            <h2 style="color: #d35400; font-size: 36px;">쿠키가 2개 있습니다</h2>
+            <div class="cookies">🍪 🍪</div>
+            <div class="choices">
+                <div class="choice">
+                    <h3>선택 A</h3>
+                    나 혼자 2개 다 먹기
+                </div>
+                <div class="choice">
+                    <h3>선택 B</h3>
+                    엄마와 1개씩 나눠 먹기
+                </div>
+            </div>
+            <div style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-radius: 15px;">
+                <h3 style="color: #e67e22; font-size: 28px;">토론 질문</h3>
+                <p style="font-size: 22px; margin-top: 10px;">왜 나눠 먹어야 할까요? 양보가 왜 필요할까요?</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 9: 중요성 -->
+    <div class="slide slide9">
+        <div class="slide-number">9 / 12</div>
+        <h1>⚖️ 왜 공정해야 할까요?</h1>
+        <div class="comparison">
+            <div class="comp-box negative">
+                <h2 style="color: #e74c3c;">😔 공정하지 않으면...</h2>
+                <ul>
+                    <li>❌ 불평불만이 쌓입니다</li>
+                    <li>❌ 서로 사이가 나빠집니다</li>
+                    <li>❌ 갈등과 싸움이 생깁니다</li>
+                    <li>❌ 신뢰가 깨집니다</li>
+                    <li>❌ 피해보는 사람이 생깁니다</li>
+                </ul>
+            </div>
+            <div class="comp-box positive">
+                <h2 style="color: #27ae60;">😊 공정하면...</h2>
+                <ul>
+                    <li>✅ 서로 신뢰합니다</li>
+                    <li>✅ 모두가 행복합니다</li>
+                    <li>✅ 평화로운 공동체가 됩니다</li>
+                    <li>✅ 서로 배려합니다</li>
+                    <li>✅ 함께 성장합니다</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 10: 정리 -->
+    <div class="slide slide10">
+        <div class="slide-number">10 / 12</div>
+        <h1>📝 오늘 배운 내용 정리</h1>
+        <div class="summary-points">
+            <div class="point">
+                <span class="point-icon">1️⃣</span>
+                <span class="point-text">공정 = 공평(똑같이) + 정의(올바름)</span>
+            </div>
+            <div class="point">
+                <span class="point-icon">2️⃣</span>
+                <span class="point-text">단순히 똑같은 것이 아니라 올바른 것이 중요</span>
+            </div>
+            <div class="point">
+                <span class="point-icon">3️⃣</span>
+                <span class="point-text">공정을 위해서는 양보와 배려가 필요</span>
+            </div>
+            <div class="point">
+                <span class="point-icon">4️⃣</span>
+                <span class="point-text">공정한 사회가 모두가 행복한 사회</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 11: 다짐 -->
+    <div class="slide slide11">
+        <div class="slide-number">11 / 12</div>
+        <h1>🌟 나의 공정 실천 다짐</h1>
+        <div class="pledge-box">
+            <h2>우리 반에서 내가 실천할 수 있는 공정한 행동은?</h2>
+            <div class="pledge-examples">
+                <div class="pledge-item">
+                    <h3>예시 1</h3>
+                    청소 시간에 내 역할을 성실히 수행하기
+                </div>
+                <div class="pledge-item">
+                    <h3>예시 2</h3>
+                    모든 친구를 공평하게 대하기
+                </div>
+                <div class="pledge-item">
+                    <h3>예시 3</h3>
+                    규칙을 지키고 다른 친구도 돕기
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 슬라이드 12: 차시예고 -->
+    <div class="slide slide12">
+        <div class="slide-number">12 / 12</div>
+        <h1>📚 다음 시간에는...</h1>
+        <div class="next-preview">
+            <h2>2차시 예고</h2>
+            <p>공정한 생활을 실천하는 방법</p>
+            <p style="font-size: 24px; margin-top: 20px;">교과서 102-105쪽 읽어오기</p>
+        </div>
+        <div style="margin-top: 40px;">
+            <h2 style="font-size: 48px;">수고하셨습니다! 👏</h2>
+        </div>
+    </div>
+    
+    <!-- 네비게이션 -->
+    <div class="nav">
+        <button onclick="previousSlide()">◀ 이전</button>
+        <span style="color: white; font-size: 18px; margin: 0 20px;" id="slideInfo">1 / 12</span>
+        <button onclick="nextSlide()">다음 ▶</button>
+        <button onclick="goToSlide(1)" style="background: #e74c3c;">처음</button>
+    </div>
+    
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 12;
+        
+        function showSlide(n) {
+            const slides = document.getElementsByClassName('slide');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+            
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('slideInfo').textContent = `${currentSlide} / ${totalSlides}`;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+        
+        function goToSlide(n) {
+            currentSlide = n;
+            showSlide(n);
+        }
+        
+        // 키보드 네비게이션
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                nextSlide();
+            }
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                previousSlide();
+            }
+            if (event.key === 'Home') {
+                event.preventDefault();
+                goToSlide(1);
+            }
+            if (event.key === 'End') {
+                event.preventDefault();
+                goToSlide(totalSlides);
+            }
+        });
+        
+        // 초기 슬라이드 표시
+        showSlide(1);
+    </script>
+</body>
+</html>
