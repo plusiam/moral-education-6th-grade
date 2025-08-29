@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>공정한 생활 - 웹학습지</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -465,6 +467,105 @@
         .hint-box strong {
             color: #e67e22;
         }
+        
+        /* 다운로드 버튼 */
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .download-btn {
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-btn.pdf {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .download-btn.image {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* 학습 인증서 */
+        .certificate {
+            display: none;
+            position: absolute;
+            left: -9999px;
+            width: 800px;
+            padding: 50px;
+            background: white;
+            text-align: center;
+        }
+        
+        .certificate h1 {
+            color: #667eea;
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+        
+        .certificate .student-info {
+            margin: 30px 0;
+            font-size: 20px;
+        }
+        
+        .certificate .completion-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -540,11 +641,11 @@
                     <h3 style="color: #e74c3c; margin-bottom: 20px;">🤔 생각해볼 질문</h3>
                     <div class="question-item">
                         <p><strong>질문 1:</strong> 왜 이 상황이 불공정하다고 느꼈나요?</p>
-                        <textarea placeholder="나의 생각을 적어보세요"></textarea>
+                        <textarea id="q1" placeholder="나의 생각을 적어보세요"></textarea>
                     </div>
                     <div class="question-item">
                         <p><strong>질문 2:</strong> 진정한 공정은 무엇일까요?</p>
-                        <textarea placeholder="나의 생각을 적어보세요"></textarea>
+                        <textarea id="q2" placeholder="나의 생각을 적어보세요"></textarea>
                     </div>
                 </div>
             </div>
@@ -638,7 +739,7 @@
             
             <div style="margin-top: 20px;">
                 <p><strong>왜 그렇게 생각했나요?</strong></p>
-                <textarea style="width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #e0e0e0; font-size: 16px; min-height: 80px;" 
+                <textarea id="cookieReason" style="width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #e0e0e0; font-size: 16px; min-height: 80px;" 
                           placeholder="나의 생각을 적어보세요"></textarea>
             </div>
         </div>
@@ -684,7 +785,39 @@
                 공정한 생활에 대해 잘 배웠네요!<br>
                 다음 시간에는 공정을 실천하는 방법을 배워요.
             </p>
+            <div class="download-buttons">
+                <button class="download-btn pdf" onclick="downloadPDF()">
+                    📄 PDF로 저장
+                </button>
+                <button class="download-btn image" onclick="downloadImage()">
+                    🖼️ 이미지로 저장
+                </button>
+            </div>
             <button class="complete-btn" onclick="closeResult()">확인</button>
+        </div>
+    </div>
+    
+    <!-- 로딩 화면 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <h3>학습 결과를 준비하고 있어요...</h3>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    
+    <!-- 인증서 템플릿 (숨김) -->
+    <div class="certificate" id="certificate">
+        <h1>🏆 학습 완료 인증서</h1>
+        <div class="student-info">
+            <h2>6학년 도덕 - 공정한 생활</h2>
+            <p id="certDate"></p>
+        </div>
+        <div class="completion-info">
+            <h3>학습 내용</h3>
+            <div id="certContent"></div>
+        </div>
+        <div style="margin-top: 40px;">
+            <p style="font-size: 24px; color: #667eea;">훌륭하게 학습을 완료했습니다!</p>
         </div>
     </div>
     
@@ -852,6 +985,188 @@
                 }
             });
         });
+        
+        // PDF 다운로드
+        function downloadPDF() {
+            showLoading(true);
+            
+            // 학습 결과 수집
+            const results = collectResults();
+            
+            // 인증서 내용 업데이트
+            updateCertificate(results);
+            
+            // jsPDF 사용
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // 인증서 스타일로 PDF 생성
+            const certificate = document.getElementById('certificate');
+            certificate.style.display = 'block';
+            certificate.style.left = '0';
+            
+            html2canvas(certificate, {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210;
+                const pageHeight = 297;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                // PDF 다운로드
+                const date = new Date().toLocaleDateString('ko-KR').replace(/\./g, '');
+                pdf.save(`공정한생활_학습결과_${date}.pdf`);
+                
+                certificate.style.display = 'none';
+                certificate.style.left = '-9999px';
+                showLoading(false);
+            });
+        }
+        
+        // 이미지 다운로드
+        function downloadImage() {
+            showLoading(true);
+            
+            // 학습 결과 수집
+            const results = collectResults();
+            
+            // 인증서 내용 업데이트
+            updateCertificate(results);
+            
+            // 인증서를 이미지로 변환
+            const certificate = document.getElementById('certificate');
+            certificate.style.display = 'block';
+            certificate.style.left = '0';
+            
+            html2canvas(certificate, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                // 이미지 다운로드
+                const link = document.createElement('a');
+                const date = new Date().toLocaleDateString('ko-KR').replace(/\./g, '');
+                link.download = `공정한생활_학습결과_${date}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                
+                certificate.style.display = 'none';
+                certificate.style.left = '-9999px';
+                showLoading(false);
+            });
+        }
+        
+        // 학습 결과 수집
+        function collectResults() {
+            const results = {
+                date: new Date().toLocaleDateString('ko-KR'),
+                objectives: [],
+                words: [],
+                questions: [],
+                pledge: '',
+                progress: completedSections
+            };
+            
+            // 학습목표 체크 상태
+            document.querySelectorAll('.objective-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                const label = item.querySelector('label').textContent;
+                results.objectives.push({
+                    text: label,
+                    checked: checkbox.checked
+                });
+            });
+            
+            // 입력한 단어들
+            results.words = myWordsList;
+            
+            // 질문 답변
+            document.querySelectorAll('.question-item textarea').forEach(textarea => {
+                if (textarea.value) {
+                    results.questions.push(textarea.value);
+                }
+            });
+            
+            // 나의 다짐
+            results.pledge = document.getElementById('pledgeInput').value;
+            
+            return results;
+        }
+        
+        // 인증서 내용 업데이트
+        function updateCertificate(results) {
+            // 날짜 설정
+            document.getElementById('certDate').textContent = `완료 날짜: ${results.date}`;
+            
+            // 학습 내용 정리
+            let content = `
+                <div style="text-align: left; margin: 20px 0;">
+                    <h4 style="color: #667eea;">✅ 달성한 학습목표</h4>
+                    <ul style="list-style: none; padding: 0;">
+            `;
+            
+            results.objectives.forEach(obj => {
+                if (obj.checked) {
+                    content += `<li style="margin: 5px 0;">✓ ${obj.text}</li>`;
+                }
+            });
+            
+            content += `</ul></div>`;
+            
+            if (results.words.length > 0) {
+                content += `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <h4 style="color: #667eea;">💭 공정하면 떠오르는 단어들</h4>
+                        <p>${results.words.join(', ')}</p>
+                    </div>
+                `;
+            }
+            
+            if (results.pledge) {
+                content += `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <h4 style="color: #667eea;">🌟 나의 다짐</h4>
+                        <p style="background: #f8f9fa; padding: 15px; border-radius: 10px; font-style: italic;">
+                            "${results.pledge}"
+                        </p>
+                    </div>
+                `;
+            }
+            
+            content += `
+                <div style="text-align: center; margin: 20px 0;">
+                    <h4 style="color: #667eea;">📊 학습 진행률</h4>
+                    <div style="background: #e0e0e0; height: 30px; border-radius: 15px; overflow: hidden; margin: 10px auto; width: 300px;">
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); height: 100%; width: ${(results.progress/totalSections)*100}%; 
+                                    text-align: center; line-height: 30px; color: white; font-weight: bold;">
+                            ${Math.round((results.progress/totalSections)*100)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('certContent').innerHTML = content;
+        }
+        
+        // 로딩 화면 표시/숨기기
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
     </script>
 </body>
 </html>
